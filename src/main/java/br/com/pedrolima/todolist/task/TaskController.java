@@ -3,6 +3,7 @@ package br.com.pedrolima.todolist.task;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.pedrolima.todolist.utils.utils;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
@@ -52,9 +54,10 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public TaskModel update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID id) {
-        UUID idUser = (UUID) request.getAttribute("idUser");
-        taskModel.setIdUser(idUser);
-        taskModel.setId(id);
-        return this.taskRepository.save(taskModel);
+        TaskModel task = this.taskRepository.findById(id).orElse(null);
+
+        utils.copuNonNullProperties(taskModel, task);
+
+        return this.taskRepository.save(task);
     }
 }

@@ -2,7 +2,6 @@ package br.com.pedrolima.todolist.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +20,7 @@ public class UserController {
     @PostMapping("/")
     public ResponseEntity create(@RequestBody UserModel userModel) {
 
-        var user = this.userRepository.findByUsername(userModel.getUsername());
+        UserModel user = this.userRepository.findByUsername(userModel.getUsername());
         if (user != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário já existe na base");
         }
@@ -31,7 +30,7 @@ public class UserController {
 
         userModel.setPassword(passwordHasred);
 
-        var userCreated = this.userRepository.save(userModel);
+        UserModel userCreated = this.userRepository.save(userModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(userCreated);
     }
 

@@ -2,10 +2,12 @@ package br.com.pedrolima.todolist.task;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +22,7 @@ public class TaskController {
     private ITaskRepository taskRepository;
 
     @PostMapping("/")
-    public ResponseEntity Create(@RequestBody TaskModel taskModel, HttpServletRequest request) {
+    public ResponseEntity create(@RequestBody TaskModel taskModel, HttpServletRequest request) {
         UUID idUser = (UUID) request.getAttribute("idUser");
         taskModel.setIdUser(idUser);
         var currentDate = LocalDateTime.now();
@@ -36,5 +38,13 @@ public class TaskController {
 
         TaskModel taskCreated = taskRepository.save(taskModel);
         return ResponseEntity.status(HttpStatus.OK).body(taskCreated);
+    }
+
+    @GetMapping("/")
+    public List<TaskModel> list(HttpServletRequest request) {
+        UUID idUser = (UUID) request.getAttribute("idUser");
+        List<TaskModel> tasks = this.taskRepository.findByIdUser(idUser);
+
+        return tasks;
     }
 }
